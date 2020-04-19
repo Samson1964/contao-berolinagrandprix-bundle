@@ -1,0 +1,79 @@
+<div class="<?= $this->class ?> block"<?= $this->cssID ?> style="<?php if ($this->margin): ?><?= trim($this->margin) ?><?php endif; ?> <?php if ($this->style): ?><?= $this->style ?><?php endif; ?>">
+
+	<?php if ($this->headline): ?>
+		<<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
+	<?php endif; ?>
+	
+	<div class="grandprix_container">
+		<h2>Kategorie A</h2>
+		<table>
+			<tr>
+				<th>Pl.</th>
+				<th>Teilnehmer</th>
+				<th>DWZ</th>
+				<th>Kat.</th>
+				<th>Gesamt</th>
+				<th>Turniere</th>
+				<?php
+					for($x = 1; $x <= $this->anzahlTurniere; $x++)
+					{
+						echo '<th>T'.$x.'</th>';
+					}
+				?>
+			</tr>
+			<?php foreach($this->tabelleA as $item): ?>
+				<tr>
+					<td><?= $item['platz'] ?></td>
+					<td><?= $item['playername'] ?></td>
+					<td><?= $item['playerdwz'] ?></td>
+					<td><?= $item['kategorie'] ?></td>
+					<td><?= $item['gesamtpunkteA'] ?></td>
+					<td><?= $item['turniere'] ?></td>
+					<?php
+						for($x = 1; $x <= $this->anzahlTurniere; $x++)
+						{
+							echo '<td>'.$item['turnierpunkteA'][$x].'</td>';
+						}
+					?>
+				</tr>
+			<?php endforeach; ?>
+		</table>
+	</div>
+
+	<div class="grandprix_container">
+		<h2>Kategorie B</h2>
+		<table>
+			<tr>
+				<th>Pl.</th>
+				<th>Teilnehmer</th>
+				<th>DWZ</th>
+				<th>Kat.</th>
+				<th>Gesamt</th>
+				<th>Turniere</th>
+				<?php
+					for($x = 1; $x <= $this->anzahlTurniere; $x++)
+					{
+						echo '<th>T'.$x.'</th>';
+					}
+				?>
+			</tr>
+			<?php foreach($this->tabelleB as $item): ?>
+				<tr>
+					<td><?= $item['platz'] ?></td>
+					<td><?= $item['playername'] ?></td>
+					<td><?= $item['playerdwz'] ?></td>
+					<td><?= $item['kategorie'] ?></td>
+					<td><?= $item['gesamtpunkteB'] ?></td>
+					<td><?= $item['turniere'] ?></td>
+					<?php
+						for($x = 1; $x <= $this->anzahlTurniere; $x++)
+						{
+							echo '<td>'.$item['turnierpunkteB'][$x].'</td>';
+						}
+					?>
+				</tr>
+			<?php endforeach; ?>
+		</table>
+	</div>
+
+</div>
