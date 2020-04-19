@@ -1,7 +1,7 @@
 {
-    "name": "schachbulle/contao-championslists-bundle",
+    "name": "schachbulle/contao-berolinagrandprix-bundle",
     "type": "contao-bundle",
-    "description": "DSB-Meisterlisten für Contao 4",
+    "description": "berolina-GrandPrix für Contao 4",
     "license": "LGPL-3.0-or-later",
     "authors": [
         {
@@ -11,8 +11,7 @@
     ],
     "require": {
         "php": "^5.6 || ^7.0",
-        "contao/core-bundle": "^4",
-        "schachbulle/contao-spielerregister-bundle": ">=1"
+        "contao/core-bundle": "^4"
     },
     "conflict": {
         "contao/core": "*",
@@ -27,11 +26,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Schachbulle\\ContaoChampionslistsBundle\\": "src/"
+            "Schachbulle\\ContaoBerolinaGrandPrixBundle\\": "src/"
         }
     },
     "support": {
-        "issues": "https://github.com/Samson1964/contao-championslists-bundle/issues",
-        "source": "https://github.com/Samson1964/contao-championslists-bundle"
+        "issues": "https://github.com/Samson1964/contao-berolinagrandprix-bundle/issues",
+        "source": "https://github.com/Samson1964/contao-berolinagrandprix-bundle"
     }
 }
