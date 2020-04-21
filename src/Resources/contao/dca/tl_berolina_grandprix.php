@@ -118,7 +118,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => '{title_legend},title,jahr;{options_legend},ratingA,ratingB,viewnull,punktgleich;{rating_legend},maxdwz,max,better_points,higher_tourns,evaluation_order_A,evaluation_order_B,evaluation_order_C,evaluation_order_D;{players_legend},players;{publish_legend},published'
+		'default'                     => '{title_legend},title,jahr;{options_legend},ratingA,ratingB,viewnull,punktgleich;{rating_legend},maxdwz,max,better_points,higher_tourns,evaluation_order_A,evaluation_order_B,evaluation_order_C,evaluation_order_D;{players_legend},playerImport,players;{publish_legend},published'
 	),
 
 	// Subpalettes
@@ -347,6 +347,11 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 			'reference'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['evaluation_order_options'],
 			'sql'                     => "int(1) unsigned NOT NULL default '0'"
 		),
+		'playerImport' => array
+		(
+			'exclude'                 => true,
+			'input_field_callback'    => array('tl_berolina_grandprix', 'getImportlink')
+		), 
 		'players' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['players'],
@@ -364,7 +369,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 						'inputType'             => 'text',
 						'eval'                  => array
 						(
-							'style'             => 'width:240px', 
+							'style'             => 'width:400px', 
 						)
 					),
 					'playerdwz' => array
@@ -497,4 +502,13 @@ class tl_berolina_grandprix extends Backend
 		$this->createNewVersion('tl_berolina_grandprix', $intId);
 	}
 
+	/**
+	 * Add a link to the table items import wizard
+	 *
+	 * @return string
+	 */
+	public function getImportlink()
+	{
+		return '<div class="long widget"><a href="' . $this->addToUrl('key=dwzlist') . '" title="Mitglieder importieren" style="line-height:16px; vertical-align:middle;"><img src="bundles/contaoberolinagrandprix/icons/import.png"> Mitglieder importieren</a></div>';
+	}
 }

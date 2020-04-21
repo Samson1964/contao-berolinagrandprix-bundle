@@ -1,5 +1,9 @@
 # Berolina-GrandPrix Changelog
 
+## Version 0.0.4 (2020-04-21)
+
+New: Import von DWZ-Listen
+
 ## Version 0.0.3 (2020-04-19)
 
 - Korrektur composer.json

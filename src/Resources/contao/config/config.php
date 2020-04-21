@@ -25,8 +25,9 @@
 
 $GLOBALS['BE_MOD']['content']['berolina-grandprix'] = array
 (
-   'tables'       	=> array('tl_berolina_grandprix', 'tl_berolina_grandprix_tournaments'),
-   'icon'         	=> 'bundles/contaoberolinagrandprix/icons/icon.png',
+   'tables'         => array('tl_berolina_grandprix', 'tl_berolina_grandprix_tournaments'),
+   'icon'           => 'bundles/contaoberolinagrandprix/icons/icon.png',
+   'dwzlist'        => array('Schachbulle\ContaoBerolinaGrandPrixBundle\Classes\Import', 'ImportListe')
 );
 
 
