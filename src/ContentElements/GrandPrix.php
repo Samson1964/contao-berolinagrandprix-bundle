@@ -251,7 +251,7 @@ class GrandPrix extends \ContentElement
 				}
 			}
 
-			print_r($teilnehmerliste);
+			//print_r($teilnehmerliste);
 
 			// Grand-Prix-Tabelle sortieren
 			$tabelleA = $this->sortArrayByFields($teilnehmerliste, array('gesamtpunkteA' => SORT_DESC, 'turniere' => SORT_ASC, 'feinwertungA1' => SORT_DESC));
@@ -305,7 +305,7 @@ class GrandPrix extends \ContentElement
 
 		//$content = "<pre>".print_r($platzreihenfolge, 1).'</pre>';
 		//$content .= "<pre>".print_r($platzanzahl, 1).'</pre>';
-		$content .= "<pre>".print_r($teilnehmerliste, 1).'</pre>';
+		//$content .= "<pre>".print_r($teilnehmerliste, 1).'</pre>';
 		$this->Template->tabelleA = $tabelleA;
 		$this->Template->tabelleB = $tabelleB;
 		$this->Template->anzahlTurniere = $max_turniernummer;
