@@ -14,30 +14,30 @@
 /**
  * Palettes
  */
-$GLOBALS['TL_DCA']['tl_content']['palettes']['berolina-grandprix'] = '{type_legend},type,headline;{berolina_legend},berolina_grandprix_list,berolina_grandprix_tourcount;{protected_legend:hide},protected;{expert_legend:hide},guest,cssID,space;{invisible_legend:hide},invisible,start,stop';
+$GLOBALS['TL_DCA']['tl_content']['palettes']['berolina-grandprix'] = '{type_legend},type,headline;{berolina_grandprix_legend},berolina_grandprix_list,berolina_grandprix_tourcount;{protected_legend:hide},protected;{expert_legend:hide},guest,cssID,space;{invisible_legend:hide},invisible,start,stop';
 
 /**
  * Fields
  */
 $GLOBALS['TL_DCA']['tl_content']['fields']['berolina_grandprix_list'] = array
 (
-	'label'                => &$GLOBALS['TL_LANG']['tl_content']['berolina_grandprix_list'],
-	'exclude'              => true,
-	'options_callback'     => array('tl_content_berolina_grandprixlist', 'getGrandPrixLists'),
-	'inputType'            => 'select',
-	'eval'                 => array
+	'label'                   => &$GLOBALS['TL_LANG']['tl_content']['berolina_grandprix_list'],
+	'exclude'                 => true,
+	'options_callback'        => array('tl_content_berolina_grandprixlist', 'getGrandPrixLists'),
+	'inputType'               => 'select',
+	'eval'                    => array
 	(
-		'mandatory'      => true, 
-		'multiple'       => false, 
-		'chosen'         => true,
-		'submitOnChange' => true,
-		'tl_class'       => 'long wizard'
+		'mandatory'           => true, 
+		'multiple'            => false, 
+		'chosen'              => true,
+		'submitOnChange'      => true,
+		'tl_class'            => 'w50 wizard'
 	),
-	'wizard'               => array
+	'wizard'                  => array
 	(
 		array('tl_content_berolina_grandprixlist', 'editListe')
 	),
-	'sql'                  => "int(10) unsigned NOT NULL default '0'" 
+	'sql'                     => "int(10) unsigned NOT NULL default '0'" 
 );
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['berolina_grandprix_tourcount'] = array
@@ -75,13 +75,13 @@ class tl_content_berolina_grandprixlist extends \Backend
 	 */
 	public function editListe(DataContainer $dc)
 	{
-		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=berolina-grandprix&amp;id=' . $dc->value . '&amp;popup=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" style="padding-left:3px" onclick="Backend.openModalIframe({\'width\':765,\'title\':\'' . specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editalias'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.gif', $GLOBALS['TL_LANG']['tl_content']['editalias'][0], 'style="vertical-align:top"') . '</a>';
+		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=berolina-grandprix&amp;act=edit&amp;id=' . $dc->value . '&amp;popup=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(specialchars($GLOBALS['TL_LANG']['tl_content']['editalias']), $dc->value) . '" style="padding-left:3px" onclick="Backend.openModalIframe({\'width\':765,\'title\':\'' . specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editalias'], $dc->value))) . '\',\'url\':this.href});return false">' . \Image::getHtml('alias.svg', $GLOBALS['TL_LANG']['tl_content']['editalias'], '') . '</a>';
 	} 
 	
 	public function getGrandPrixLists(DataContainer $dc)
 	{
 		$array = array();
-		$objListe = $this->Database->prepare("SELECT * FROM tl_berolina_grandprix ORDER BY jahr DESC")->execute();
+		$objListe = \Database::getInstance()->prepare("SELECT * FROM tl_berolina_grandprix ORDER BY jahr DESC")->execute();
 		while($objListe->next())
 		{
 			$array[$objListe->id] = $objListe->jahr . ' - ' . $objListe->title;
@@ -96,5 +96,3 @@ class tl_content_berolina_grandprixlist extends \Backend
 	} 
 
 }
-
-?>

@@ -21,22 +21,24 @@
 					}
 				?>
 			</tr>
-			<?php foreach($this->tabelleA as $item): ?>
-				<tr>
-					<td><?= $item['platz'] ?></td>
-					<td><?= $item['playername'] ?></td>
-					<td><?= $item['playerdwz'] ?></td>
-					<td><?= $item['kategorie'] ?></td>
-					<td><?= $item['gesamtpunkteA'] ?></td>
-					<td><?= $item['turniere'] ?></td>
-					<?php
-						for($x = 1; $x <= $this->anzahlTurniere; $x++)
-						{
-							echo '<td>'.$item['turnierpunkteA'][$x].'</td>';
-						}
-					?>
-				</tr>
-			<?php endforeach; ?>
+			<?php if(is_array($this->tabelleA)): ?>
+				<?php foreach($this->tabelleA as $item): ?>
+					<tr>
+						<td><?= $item['platz'] ?></td>
+						<td><?= $item['playername'] ?></td>
+						<td><?= $item['playerdwz'] ?></td>
+						<td><?= $item['kategorie'] ?></td>
+						<td><?= $item['gesamtpunkteA'] ?></td>
+						<td><?= $item['turniere'] ?></td>
+						<?php
+							for($x = 1; $x <= $this->anzahlTurniere; $x++)
+							{
+								echo '<td>'.$item['turnierpunkteA'][$x].'</td>';
+							}
+						?>
+					</tr>
+				<?php endforeach; ?>
+			<?php endif ?>
 		</table>
 	</div>
 
@@ -57,22 +59,24 @@
 					}
 				?>
 			</tr>
-			<?php foreach($this->tabelleB as $item): ?>
-				<tr>
-					<td><?= $item['platz'] ?></td>
-					<td><?= $item['playername'] ?></td>
-					<td><?= $item['playerdwz'] ?></td>
-					<td><?= $item['kategorie'] ?></td>
-					<td><?= $item['gesamtpunkteB'] ?></td>
-					<td><?= $item['turniere'] ?></td>
-					<?php
-						for($x = 1; $x <= $this->anzahlTurniere; $x++)
-						{
-							echo '<td>'.$item['turnierpunkteB'][$x].'</td>';
-						}
-					?>
-				</tr>
-			<?php endforeach; ?>
+			<?php if(is_array($this->tabelleB)): ?>
+				<?php foreach($this->tabelleB as $item): ?>
+					<tr>
+						<td><?= $item['platz'] ?></td>
+						<td><?= $item['playername'] ?></td>
+						<td><?= $item['playerdwz'] ?></td>
+						<td><?= $item['kategorie'] ?></td>
+						<td><?= $item['gesamtpunkteB'] ?></td>
+						<td><?= $item['turniere'] ?></td>
+						<?php
+							for($x = 1; $x <= $this->anzahlTurniere; $x++)
+							{
+								echo '<td>'.$item['turnierpunkteB'][$x].'</td>';
+							}
+						?>
+					</tr>
+				<?php endforeach; ?>
+			<?php endif ?>
 		</table>
 	</div>
 
