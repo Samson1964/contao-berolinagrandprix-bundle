@@ -1,5 +1,10 @@
 # Berolina-GrandPrix Changelog
 
+## Version 1.0.1 (2023-02-28)
+
+* Fix: Syntaxfehler in composer.json
+* Add: Kompatibilität mit PHP 8 in composer.json
+
 ## Version 1.0.0 (2023-02-27)
 
 * Add: Abhängigkeit codefog/contao-haste
