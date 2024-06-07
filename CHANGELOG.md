@@ -1,5 +1,9 @@
 # Berolina-GrandPrix Changelog
 
+## Version 1.0.3 (2024-06-07)
+
+* Fix: Warning: Undefined array key "punkte" in ContentElements/GrandPrix.php (line 309) 
+
 ## Version 1.0.2 (2024-06-06)
 
 * Fix: Warning: Undefined array key 1 in ContentElements/GrandPrix.php (line 509) -> Code aus Chesstable-Bundle übernommen

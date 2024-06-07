@@ -306,7 +306,10 @@ class GrandPrix extends \ContentElement
 			for($x = 0; $x < count($tabelleB); $x++)
 			{
 				$platz = $x + 1;
-				$neu = $tabelleB[$x]['punkte'].$tabelleB[$x]['feinwertungB1'].$tabelleB[$x]['turniere'];
+				$neu = '';
+				if(isset($tabelleB[$x]['punkte'])) $neu .= $tabelleB[$x]['punkte'];
+				if(isset($tabelleB[$x]['feinwertungA1'])) $neu .= $tabelleB[$x]['feinwertungA1'];
+				if(isset($tabelleB[$x]['turniere'])) $neu .= $tabelleB[$x]['turniere'];
 				$tabelleB[$x]['platz'] = ($neu == $alt) ? '' : $platz.'.';
 				$alt = $neu;
 			}
