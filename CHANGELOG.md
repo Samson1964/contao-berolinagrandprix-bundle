@@ -1,5 +1,11 @@
 # Berolina-GrandPrix Changelog
 
+## Version 1.1.0 (2025-01-26)
+
+* Add: tl_berolina_grandprix.evaluation_order -> Feinwertungen vereinheitlicht
+* Delete: tl_berolina_grandprix.evaluation_order_A, evaluation_order_B, evaluation_order_C, evaluation_order_D, better_points, higher_tourns entfernt
+* Fix: Wertungsoptionen zu Ende programmiert
+
 ## Version 1.0.3 (2024-06-07)
 
 * Fix: Warning: Undefined array key "punkte" in ContentElements/GrandPrix.php (line 309) 

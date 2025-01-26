@@ -1,18 +1,6 @@
-<?php 
+<?php
 
 namespace Schachbulle\ContaoBerolinaGrandPrixBundle\ContentElements;
-
-/**
- * Contao Open Source CMS
- *
- * Copyright (C) 2005-2013 Leo Feyer
- *
- * @package   chesstable
- * Version    1.0.0
- * @author    Frank Hoppe
- * @license   GNU/LGPL
- * @copyright Frank Hoppe 2013
- */
 
 class GrandPrix extends \ContentElement
 {
@@ -35,7 +23,7 @@ class GrandPrix extends \ContentElement
 
 		// Infos zum gewünschten Grand Prix laden
 		$objGrandPrix = \Database::getInstance()->prepare('SELECT * FROM tl_berolina_grandprix WHERE published = ? AND id = ?')
-		                                        ->execute(1, $gp_liste);		
+		                                        ->execute(1, $gp_liste);
 
 		// Meisterschaftsteilnehmer einlesen
 		$teilnehmerliste = array();
@@ -48,12 +36,12 @@ class GrandPrix extends \ContentElement
 			{
 				$teilnehmerliste[$x]['kategorie'] = ($teilnehmerliste[$x]['playerdwz'] > $objGrandPrix->maxdwz) ? 'A' : 'B'; // Kategorie zuweisen
 				$teilnehmerliste[$x]['turniere'] = 0;
+				$teilnehmerliste[$x]['turniersiegeA'] = 0;
+				$teilnehmerliste[$x]['turniersiegeB'] = 0;
 				$teilnehmerliste[$x]['gesamtpunkteA'] = 0;
 				$teilnehmerliste[$x]['gesamtpunkteB'] = 0;
 				$teilnehmerliste[$x]['turnierpunkteA'] = array();
 				$teilnehmerliste[$x]['turnierpunkteB'] = array();
-				$teilnehmerliste[$x]['sortierungA'] = '';
-				$teilnehmerliste[$x]['sortierungB'] = '';
 				for($y = 1; $y <= $max_turniernummer; $y++)
 				{
 					$teilnehmerliste[$x]['turnierpunkteA'][$y] = false;
@@ -72,6 +60,10 @@ class GrandPrix extends \ContentElement
 			                                       ->limit($max_turniernummer)
 			                                       ->execute(1, $gp_liste);
 
+			//echo "<pre>";
+			//print_r($teilnehmerliste);
+			//echo "</pre>";
+			
 			if($objTurniere->numRows > 0)
 			{
 				$platzanzahl = array(); // Nimmt die Anzahl der gleichen Platzziffern in allen Turnieren auf
@@ -144,6 +136,10 @@ class GrandPrix extends \ContentElement
 					}
 				}
 
+				//echo "<pre>";
+				//print_r($teilnehmerliste[33]);
+				//echo "</pre>";
+
 				// Platzziffern in Wertungspunkte umwandeln
 				// Beginnen bei Turnier 1 bis zum max. möglichen Turnier
 				for($t = 1; $t <= $max_turniernummer; $t++)
@@ -159,6 +155,10 @@ class GrandPrix extends \ContentElement
 							$wertungspunkte = $this->Wertungspunkte($t, 'A', $p, $wertungA, $platzreihenfolge, $objGrandPrix);
 							// Wertungspunkte in Teilnehmerliste eintragen, Plazierung damit ersetzen
 							$teilnehmerliste[$spielernummer]['turnierpunkteA'][$t] = $wertungspunkte;
+							if($wertungspunkte == $wertungA[0])
+							{
+								$teilnehmerliste[$spielernummer]['turniersiegeA']++;
+							}
 						}
 					}
 					// Wertungspunkte für B-Kategorie ermitteln
@@ -172,6 +172,10 @@ class GrandPrix extends \ContentElement
 							$wertungspunkte = $this->Wertungspunkte($t, 'B', $p, $wertungB, $platzreihenfolge, $objGrandPrix);
 							// Wertungspunkte in Teilnehmerliste eintragen, Plazierung damit ersetzen
 							$teilnehmerliste[$spielernummer]['turnierpunkteB'][$t] = $wertungspunkte;
+							if($wertungspunkte == $wertungB[0])
+							{
+								$teilnehmerliste[$spielernummer]['turniersiegeB']++;
+							}
 						}
 					}
 				}
@@ -188,7 +192,7 @@ class GrandPrix extends \ContentElement
 
 				// Feinwertung aus den besten x Turnieren generieren
 				$temp = '';
-				foreach ($arr as $element) 
+				foreach ($arr as $element)
 				{
 					$temp .= sprintf('%02d_', $element + 0);
 				}
@@ -211,7 +215,7 @@ class GrandPrix extends \ContentElement
 
 				// Feinwertung aus den besten x Turnieren generieren
 				$temp = '';
-				foreach ($arr as $element) 
+				foreach ($arr as $element)
 				{
 					$temp .= sprintf('%02d_', $element + 0);
 				}
@@ -225,43 +229,36 @@ class GrandPrix extends \ContentElement
 						if(!isset($arr[$key])) $teilnehmerliste[$snr]['turnierpunkteB'][$key] = '<s>'.$teilnehmerliste[$snr]['turnierpunkteB'][$key].'</s>';
 					}
 				}
-				
+
 			}
 
-			// Wertungen der Reihe nach im Sortierfeld eintragen
-			for($x = 0; $x < 4; $x++)
+			//echo "<pre>";
+			//print_r($teilnehmerliste[33]);
+			//echo "</pre>";
+			
+			// Wertungsreihenfolge laden und Sortierung initialisieren
+			$wertungen = unserialize($objGrandPrix->evaluation_order);
+			$sortierungA = array();
+
+			if(count($wertungen))
 			{
-				switch($x)
+				for($x = 0; $x < count($wertungen); $x++)
 				{
-					case 0: $wertungsoption = $objGrandPrix->evaluation_order_A; break;
-					case 1: $wertungsoption = $objGrandPrix->evaluation_order_B; break;
-					case 2: $wertungsoption = $objGrandPrix->evaluation_order_C; break;
-					case 3: $wertungsoption = $objGrandPrix->evaluation_order_D; break;
-				}
-				switch($wertungsoption)
-				{
-					case 0: // Nichts machen, Option nicht gewählt
-						break;
-					case 1: // Höhere Grand-Prix-Punkte insgesamt
-						for($snr = 0; $snr < count($teilnehmerliste); $snr++)
-						{
-							$teilnehmerliste[$snr]['sortierungA'] .= sprintf('%03d_', $teilnehmerliste[$snr]['gesamtpunkteA']);
-							$teilnehmerliste[$snr]['sortierungB'] .= sprintf('%03d_', $teilnehmerliste[$snr]['gesamtpunkteB']);
-						}
-						break;
-					case 2: // Höhere Grand-Prix-Punkte im besten Turnier
-						break;
-					case 3: // Höhere Anzahl der gespielten Turniere
-						break;
-					case 4: // Niedrigere Anzahl der gespielten Turniere
-						break;
+					switch($wertungen[$x])
+					{
+						case 1: // Höhere Grand-Prix-Punkte in den gewerteten Turnieren
+							$sortierungA['gesamtpunkteA'] = SORT_DESC; break;
+						case 2: // Höhere Anzahl der gespielten Turniere
+							$sortierungA['turniere'] = SORT_DESC; break;
+						case 3: // Niedrigere Anzahl der gespielten Turniere
+							$sortierungA['turniere'] = SORT_ASC; break;
+						case 4: // Höhere Anzahl der gewonnenen Turniere
+							$sortierungA['turniersiegeA'] = SORT_DESC; break;
+					}
 				}
 			}
-
-			//print_r($teilnehmerliste);
-
-			// Grand-Prix-Tabelle sortieren
-			$tabelleA = $this->sortArrayByFields($teilnehmerliste, array('gesamtpunkteA' => SORT_DESC, 'turniere' => SORT_ASC, 'feinwertungA1' => SORT_DESC));
+			// Grand-Prix-Tabelle A sortieren
+			$tabelleA = $this->sortArrayByFields($teilnehmerliste, $sortierungA);
 
 			// Teilnehmer mit 0 Turnieren entfernen
 			$temp = array();
@@ -274,21 +271,55 @@ class GrandPrix extends \ContentElement
 			}
 			$tabelleA = $temp;
 
-			// Plazierung eintragen
+			//echo "<pre>";
+			//print_r($tabelleA);
+			//echo "</pre>";
+
+			// Plazierung anhand Sortierung der Wertungen eintragen. Gleiche Sortierung, gleicher Platz
 			$alt = '';
 			for($x = 0; $x < count($tabelleA); $x++)
 			{
 				$platz = $x + 1;
 				$neu = '';
-				if(isset($tabelleA[$x]['punkte'])) $neu .= $tabelleA[$x]['punkte'];
-				if(isset($tabelleA[$x]['feinwertungA1'])) $neu .= $tabelleA[$x]['feinwertungA1'];
-				if(isset($tabelleA[$x]['turniere'])) $neu .= $tabelleA[$x]['turniere'];
+				for($y = 0; $y < count($wertungen); $y++)
+				{
+					switch($wertungen[$y])
+					{
+						case 1: // Höhere Grand-Prix-Punkte in den gewerteten Turnieren
+							$neu .= substr('0000'.$tabelleA[$x]['gesamtpunkteA'], -4); break;
+						case 2: // Höhere Anzahl der gespielten Turniere
+							$neu .= substr('0000'.$tabelleA[$x]['turniere'], -2); break;
+						case 3: // Niedrigere Anzahl der gespielten Turniere
+							$neu .= substr('0000'.$tabelleA[$x]['turniere'], -2); break;
+						case 4: // Höhere Anzahl der gewonnenen Turniere
+							$neu .= substr('0000'.$tabelleA[$x]['turniersiegeA'], -2); break;
+					}
+				}
 				$tabelleA[$x]['platz'] = ($neu == $alt) ? '' : $platz.'.';
 				$alt = $neu;
 			}
 
-			// Grand-Prix-Tabelle sortieren
-			$tabelleB = $this->sortArrayByFields($teilnehmerliste, array('gesamtpunkteB' => SORT_DESC, 'turniere' => SORT_ASC, 'feinwertungB1' => SORT_DESC));
+			$sortierungB = array();
+
+			if(count($wertungen))
+			{
+				for($x = 0; $x < count($wertungen); $x++)
+				{
+					switch($wertungen[$x])
+					{
+						case 1: // Höhere Grand-Prix-Punkte in den gewerteten Turnieren
+							$sortierungB['gesamtpunkteB'] = SORT_DESC; break;
+						case 2: // Höhere Anzahl der gespielten Turniere
+							$sortierungB['turniere'] = SORT_DESC; break;
+						case 3: // Niedrigere Anzahl der gespielten Turniere
+							$sortierungB['turniere'] = SORT_ASC; break;
+						case 4: // Höhere Anzahl der gewonnenen Turniere
+							$sortierungB['turniersiegeB'] = SORT_DESC; break;
+					}
+				}
+			}
+			// Grand-Prix-Tabelle B sortieren
+			$tabelleB = $this->sortArrayByFields($teilnehmerliste, $sortierungB);
 
 			// Teilnehmer mit 0 Turnieren und Kat. A entfernen
 			$temp = array();
@@ -301,15 +332,26 @@ class GrandPrix extends \ContentElement
 			}
 			$tabelleB = $temp;
 
-			// Plazierung eintragen
+			// Plazierung anhand Sortierung der Wertungen eintragen. Gleiche Sortierung, gleicher Platz
 			$alt = '';
 			for($x = 0; $x < count($tabelleB); $x++)
 			{
 				$platz = $x + 1;
 				$neu = '';
-				if(isset($tabelleB[$x]['punkte'])) $neu .= $tabelleB[$x]['punkte'];
-				if(isset($tabelleB[$x]['feinwertungA1'])) $neu .= $tabelleB[$x]['feinwertungA1'];
-				if(isset($tabelleB[$x]['turniere'])) $neu .= $tabelleB[$x]['turniere'];
+				for($y = 0; $y < count($wertungen); $y++)
+				{
+					switch($wertungen[$y])
+					{
+						case 1: // Höhere Grand-Prix-Punkte in den gewerteten Turnieren
+							$neu .= substr('0000'.$tabelleB[$x]['gesamtpunkteB'], -4); break;
+						case 2: // Höhere Anzahl der gespielten Turniere
+							$neu .= substr('0000'.$tabelleB[$x]['turniere'], -2); break;
+						case 3: // Niedrigere Anzahl der gespielten Turniere
+							$neu .= substr('0000'.$tabelleB[$x]['turniere'], -2); break;
+						case 4: // Höhere Anzahl der gewonnenen Turniere
+							$neu .= substr('0000'.$tabelleB[$x]['turniersiegeB'], -2); break;
+					}
+				}
 				$tabelleB[$x]['platz'] = ($neu == $alt) ? '' : $platz.'.';
 				$alt = $neu;
 			}
@@ -324,103 +366,6 @@ class GrandPrix extends \ContentElement
 		$this->Template->anzahlTurniere = $max_turniernummer;
 		return;
 
-
-		if($objGrandPrix->numRows == 1)
-		{
-
-			if($objTurniere->numRows > 0)
-			{
-				$arrGP = array(); // Array mit den Spielern/Wertungspunkten initialisieren
-				$turnier = 0; // Zähler für Turniernummer
-				
-
-				// Summenwertung im Grand-Prix-Array berechnen
-				for($x = 0; $x < count($arrGP); $x++)
-				{
-					// Turnieranzahl eintragen
-					$anzahl = 0;
-					$beste_turniere = array(); // Nimmt die Wertungspunkte der Turniere auf
-					if($arrGP[$x]['bonus']) 
-					{
-						$anzahl++;
-						$beste_turniere[] = sprintf("%2s",$arrGP[$x]['bonus']); // zweistellig, z.B. "01" statt "1"
-					}
-					for($t = 1; $t <= 14; $t++)
-					{
-						if($arrGP[$x]['t'.$t] !== false) 
-						{
-							$anzahl++;
-							$beste_turniere[] = $arrGP[$x]['t'.$t]; // zweistellig, z.B. "01" statt "1"
-						}
-					}
-					rsort($beste_turniere); // Drittwertung alphabetisch sortieren, höchster Wert am Anfang
-					array_push($beste_turniere, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); // Array auffüllen (damit Maximum der zu wertenden Turniere erreicht wird)
-					$beste_turniere = array_slice($beste_turniere, 0, $objGrandPrix->max); // Auf beste x Turniere kürzen
-					$arrGP[$x]['punkte'] = array_sum($beste_turniere); // Summe der Wertungen eintragen
-					$arrGP[$x]['anzahl'] = $anzahl;
-					// 1. Feinwertung eintragen
-					$temp = '';
-					foreach ($beste_turniere as $element) 
-					{
-						$temp .= substr('0'.$element, -2).'_';
-					}
-					$arrGP[$x]['feinwertung1'] = $temp;
-				}
-				
-				// Grand-Prix-Tabelle sortieren
-				$arrGP = $this->sortArrayByFields($arrGP, array('punkte' => SORT_DESC, 'feinwertung1' => SORT_DESC, 'anzahl' => SORT_DESC));
-
-				//print_r($arrGP);
-				// Header erstellen
-				$content = '<table>';
-				$content .= '<tr>';
-				$content .= '<th>Pl.</th>';
-				$content .= '<th>Teilnehmer</th>';
-				$content .= '<th>B</th>';
-				for($x = 1; $x <= $objTurniere->numRows; $x++)
-				{
-					$content .= '<th>T'.$x.'</th>';
-				}
-				$content .= '<th>Summe</th>';
-				$content .= '<th>Anz.</th>';
-				$content .= '</tr>';
-				$alt = '';
-				for($x = 0; $x < count($arrGP); $x++)
-				{
-					$platz = $x + 1;
-					$neu = $arrGP[$x]['punkte'].$arrGP[$x]['feinwertung1'].$arrGP[$x]['anzahl'];
-					$content .= '<tr>';
-					$content .= $neu == $alt ? '<td>&nbsp;</td>' : '<td>'.$platz.'.</td>';
-					$alt = $neu;
-					$content .= '<td>'.$arrGP[$x]['name'].'</td>';
-					$content .= '<td>'.$arrGP[$x]['bonus'].'</td>';
-					for($y = 1; $y <= $objTurniere->numRows; $y++)
-					{
-						$content .= '<td>'.$arrGP[$x]['t'.$y].'</td>';
-					}
-					$content .= '<td>'.$arrGP[$x]['punkte'].'</td>';
-					$content .= '<td>'.$arrGP[$x]['anzahl'].'</td>';
-					$content .= '</tr>';
-				}
-				$content .= '</table>';
-				
-				//$content .= $objTurniere->title;
-			}
-			$this->Template->tabelle = $content;
-		}
-		else
-		{
-			$this->Template->tabelle = 'Noch kein Gesamtstand verfügbar!';
-		}
-		//global $objPage,$objArticle;
-		//print_r($GLOBALS);
-		//echo "ID=".$objPage->id;
-
-		// Parameter zuweisen
-			// Template ausgeben
-			//$this->Template = new \FrontendTemplate($this->strTemplate);
-			//$this->Template->class = "ce_chesstable";
-			//$this->Template->tabelle = $content;
 	}
 
 	/*********************************************************************
@@ -481,7 +426,7 @@ class GrandPrix extends \ContentElement
 		}
 
 		//echo "--- Summe WP: $wp_summe | Max WP: $wp_max | Zähler WP: $wp_count<br>";
-		
+
 		if($objGrandPrix->punktgleich) return 0 + sprintf('%1.2f', $wp_summe / $wp_count);
 		else return 0 + $wp_max;
 	}
@@ -544,21 +489,21 @@ class GrandPrix extends \ContentElement
 		return $result;
 	}
 
-	protected function NameKonvertieren($string) 
+	protected function NameKonvertieren($string)
 	{
 		// Berichtigt einen String "Name,Vorname,Titel"
 		// Entfernung von Leerzeichen und FIDE-Titeln
 		$teil = explode(",",$string);
 		// Leerzeichen davor und dahinter entfernen
-		for($x=0;$x<count($teil);$x++) 
+		for($x=0;$x<count($teil);$x++)
 		{
 			$teil[$x] = trim($teil[$x]);
 		}
 		// Neuen String bauen
 		$temp = $teil[0];
-		for($x=1;$x<count($teil);$x++) 
+		for($x=1;$x<count($teil);$x++)
 		{
-			if(strtoupper($teil[$x])!="FM" && strtoupper($teil[$x])!="IM" && strtoupper($teil[$x])!="GM" && strtoupper($teil[$x])!="CM" && strtoupper($teil[$x])!="WGM" && strtoupper($teil[$x])!="WIM" && strtoupper($teil[$x])!="WFM" && strtoupper($teil[$x])!="WCM") 
+			if(strtoupper($teil[$x])!="FM" && strtoupper($teil[$x])!="IM" && strtoupper($teil[$x])!="GM" && strtoupper($teil[$x])!="CM" && strtoupper($teil[$x])!="WGM" && strtoupper($teil[$x])!="WIM" && strtoupper($teil[$x])!="WFM" && strtoupper($teil[$x])!="WCM")
 			{
 				$temp .= ",".$teil[$x];
 			}
@@ -570,16 +515,16 @@ class GrandPrix extends \ContentElement
 	{
 		$sortFields = array();
 		$args       = array();
-		
+
 		foreach ($arr as $key => $row) {
 			foreach ($fields as $field => $order) {
 				$sortFields[$field][$key] = $row[$field];
 			}
 		}
-		
+
 		foreach ($fields as $field => $order) {
 			$args[] = $sortFields[$field];
-			
+
 			if (is_array($order)) {
 				foreach ($order as $pt) {
 				    $args[$pt];
@@ -588,11 +533,11 @@ class GrandPrix extends \ContentElement
 				$args[] = $order;
 			}
 		}
-		
+
 		$args[] = &$arr;
-		
+
 		call_user_func_array('array_multisort', $args);
-		
+
 		return $arr;
 	}
 

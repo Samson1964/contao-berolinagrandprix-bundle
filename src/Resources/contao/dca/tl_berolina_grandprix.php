@@ -125,7 +125,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => '{title_legend},title,jahr;{options_legend},ratingA,ratingB,viewnull,punktgleich;{rating_legend},maxdwz,max,better_points,higher_tourns,evaluation_order_A,evaluation_order_B,evaluation_order_C,evaluation_order_D;{players_legend},playerImport,players;{publish_legend},published'
+		'default'                     => '{title_legend},title,jahr;{options_legend},ratingA,ratingB,viewnull,punktgleich;{rating_legend},maxdwz,max,evaluation_order;{players_legend},playerImport,players;{publish_legend},published'
 	),
 
 	// Subpalettes
@@ -278,81 +278,20 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 			),
 			'sql'                     => "int(1) unsigned NOT NULL default '0'"
 		),
-		'better_points' => array
+		'evaluation_order' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['better_points'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['evaluation_order'],
 			'exclude'                 => true,
-			'search'                  => false,
-			'sorting'                 => false,
-			'default'                 => true,
-			'filter'                  => true,
-			'inputType'               => 'checkbox',
+			'default'                 => 0,
+			'inputType'               => 'checkboxWizard',
+			'options'                 => array('1', '2', '3', '4'),
 			'eval'                    => array
 			(
-				'tl_class'            => 'w50 clr',
-				'isBoolean'           => true
+				'multiple'            => true,
+				'tl_class'            => 'clr long'
 			),
-			'sql'                     => "char(1) NOT NULL default ''"
-		), 
-		'higher_tourns' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['higher_tourns'],
-			'exclude'                 => true,
-			'search'                  => false,
-			'sorting'                 => false,
-			'default'                 => true,
-			'filter'                  => true,
-			'inputType'               => 'checkbox',
-			'eval'                    => array
-			(
-				'tl_class'            => 'w50',
-				'isBoolean'           => true
-			),
-			'sql'                     => "char(1) NOT NULL default ''"
-		), 
-		'evaluation_order_A' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['evaluation_order_A'],
-			'exclude'                 => true,
-			'default'                 => 0,
-			'inputType'               => 'radio',
-			'options'                 => array('0', '1', '2', '3', '4', '5'),
-			'eval'                    => array('tl_class'=>'long'),
 			'reference'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['evaluation_order_options'],
-			'sql'                     => "int(1) unsigned NOT NULL default '0'"
-		),
-		'evaluation_order_B' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['evaluation_order_B'],
-			'exclude'                 => true,
-			'default'                 => 0,
-			'inputType'               => 'radio',
-			'options'                 => array('0', '1', '2', '3', '4', '5'),
-			'eval'                    => array('tl_class'=>'long'),
-			'reference'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['evaluation_order_options'],
-			'sql'                     => "int(1) unsigned NOT NULL default '0'"
-		),
-		'evaluation_order_C' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['evaluation_order_C'],
-			'exclude'                 => true,
-			'default'                 => 0,
-			'inputType'               => 'radio',
-			'options'                 => array('0', '1', '2', '3', '4', '5'),
-			'eval'                    => array('tl_class'=>'long'),
-			'reference'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['evaluation_order_options'],
-			'sql'                     => "int(1) unsigned NOT NULL default '0'"
-		),
-		'evaluation_order_D' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['evaluation_order_D'],
-			'exclude'                 => true,
-			'default'                 => 0,
-			'inputType'               => 'radio',
-			'options'                 => array('0', '1', '2', '3', '4', '5'),
-			'eval'                    => array('tl_class'=>'long'),
-			'reference'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['evaluation_order_options'],
-			'sql'                     => "int(1) unsigned NOT NULL default '0'"
+			'sql'                     => "blob NULL"
 		),
 		'playerImport' => array
 		(
