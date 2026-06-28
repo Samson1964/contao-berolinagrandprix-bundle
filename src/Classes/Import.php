@@ -19,43 +19,34 @@ namespace Schachbulle\ContaoBerolinaGrandPrixBundle\Classes;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class Import extends \Backend
+class Import extends \Contao\Backend
 {
 
 	/**
 	 * Return a form to choose a CSV file and import it
 	 *
-	 * @param \DataContainer $dc
+	 * @param \Contao\DataContainer $dc
 	 *
 	 * @return string
 	 */
-	public function ImportListe(\DataContainer $dc)
+	public function ImportListe(\Contao\DataContainer $dc)
 	{
-		if (\Input::get('key') != 'dwzlist')
+		if (\Contao\Input::get('key') != 'dwzlist')
 		{
 			return '';
 		}
-		
-		$this->import('BackendUser', 'User');
-		$class = $this->User->uploader;
 
-		// See #4086 and #7046
-		if (!class_exists($class) || $class == 'DropZone')
-		{
-			$class = 'FileUpload';
-		}
+		// Datei-Upload-Widget instanzieren (Contao 5: $this->User->uploader entfällt)
+		$objUploader = new \Contao\FileUpload();
 
-		/** @var \FileUpload $objUploader */
-		$objUploader = new $class();
-
-		// Import CSS
-		if (\Input::post('FORM_SUBMIT') == 'tl_berolinagrandprix_import')
+		// CSV importieren
+		if (\Contao\Input::post('FORM_SUBMIT') == 'tl_berolinagrandprix_import')
 		{
 			$arrUploaded = $objUploader->uploadTo('system/tmp');
 
 			if (empty($arrUploaded))
 			{
-				\Message::addError($GLOBALS['TL_LANG']['ERR']['all_fields']);
+				\Contao\Message::addError($GLOBALS['TL_LANG']['ERR']['all_fields']);
 				$this->reload();
 			}
 
@@ -64,16 +55,16 @@ class Import extends \Backend
 
 			foreach ($arrUploaded as $strCsvFile)
 			{
-				$objFile = new \File($strCsvFile, true);
+				$objFile = new \Contao\File($strCsvFile);
 
 				if($objFile->extension != 'csv')
 				{
-					\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $objFile->extension));
+					\Contao\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $objFile->extension));
 					continue;
 				}
 
 				// Get separator
-				switch (\Input::post('separator'))
+				switch (\Contao\Input::post('separator'))
 				{
 					case 'semicolon':
 						$strSeparator = ';';
@@ -108,26 +99,29 @@ class Import extends \Backend
 				);
 			}
 
-			$objVersions = new \Versions($dc->table, \Input::get('id'));
+			$objVersions = new \Contao\Versions($dc->table, \Contao\Input::get('id'));
 			$objVersions->create();
 
 			$this->Database->prepare("UPDATE " . $dc->table . " SET players=? WHERE id=?")
-			               ->execute(serialize($arrImport), \Input::get('id'));
+			               ->execute(serialize($arrImport), \Contao\Input::get('id'));
 
-			\System::setCookie('BE_PAGE_OFFSET', 0, 0);
-			$this->redirect(str_replace('&key=dwzlist', '', \Environment::get('request')));
+			\Contao\System::setCookie('BE_PAGE_OFFSET', 0, 0);
+			$this->redirect(str_replace('&key=dwzlist', '', \Contao\Environment::get('request')));
 		}
+
+		// Request-Token (REQUEST_TOKEN-Konstante existiert in Contao 5 nicht mehr)
+		$strToken = \Contao\System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue();
 
 		// Return form
 		return '
 <div id="tl_buttons">
-<a href="'.ampersand(str_replace('&key=dwzlist', '', \Environment::get('request'))).'" class="header_back" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']).'" accesskey="b">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>
+<a href="'.\Contao\StringUtil::ampersand(str_replace('&key=dwzlist', '', \Contao\Environment::get('request'))).'" class="header_back" title="'.\Contao\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']).'" accesskey="b">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>
 </div>
-'.\Message::generate().'
-<form action="'.ampersand(\Environment::get('request'), true).'" id="tl_table_import" class="tl_form" method="post" enctype="multipart/form-data">
+'.\Contao\Message::generate().'
+<form action="'.\Contao\StringUtil::ampersand(\Contao\Environment::get('request'), true).'" id="tl_table_import" class="tl_form" method="post" enctype="multipart/form-data">
 <div class="tl_formbody_edit">
 <input type="hidden" name="FORM_SUBMIT" value="tl_berolinagrandprix_import">
-<input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">
+<input type="hidden" name="REQUEST_TOKEN" value="'.$strToken.'">
 
 <div class="tl_tbox widget">
   <h3><label for="separator">'.$GLOBALS['TL_LANG']['MSC']['separator'][0].'</label></h3>
@@ -148,7 +142,7 @@ class Import extends \Backend
 <div class="tl_formbody_submit">
 
 <div class="tl_submit_container">
-  <input type="submit" name="save" id="save" class="tl_submit" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['tw_import'][0]).'">
+  <input type="submit" name="save" id="save" class="tl_submit" accesskey="s" value="'.\Contao\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['tw_import'][0]).'">
 </div>
 
 </div>

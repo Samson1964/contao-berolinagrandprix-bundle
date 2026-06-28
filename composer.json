@@ -1,7 +1,7 @@
 {
     "name": "schachbulle/contao-berolinagrandprix-bundle",
     "type": "contao-bundle",
-    "description": "Berolina-GrandPrix für Contao 4",
+    "description": "Berolina-GrandPrix für Contao 5",
     "license": "LGPL-3.0-or-later",
     "authors": [
         {
@@ -10,10 +10,10 @@
         }
     ],
     "require": {
-        "php": "^5.6 || ^7 || ^8",
-        "codefog/contao-haste": "*",
-        "menatwork/contao-multicolumnwizard-bundle": "*",
-        "contao/core-bundle": "^4"
+        "php": "^8.1",
+        "contao/core-bundle": "^5.3",
+        "symfony/dependency-injection": "^6.4 || ^7.0",
+        "menatwork/contao-multicolumnwizard-bundle": "*"
     },
     "conflict": {
         "contao/core": "*",

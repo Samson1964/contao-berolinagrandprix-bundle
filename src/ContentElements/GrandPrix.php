@@ -2,7 +2,7 @@
 
 namespace Schachbulle\ContaoBerolinaGrandPrixBundle\ContentElements;
 
-class GrandPrix extends \ContentElement
+class GrandPrix extends \Contao\ContentElement
 {
 
 	/**
@@ -21,8 +21,12 @@ class GrandPrix extends \ContentElement
 		$gp_liste = $this->berolina_grandprix_list; // Nummer der gewünschten Meisterschaft
 		$max_turniernummer = $this->berolina_grandprix_tourcount; // Höchste zu berücksichtigende Turniernummer
 
+		// Ausgabetabellen vorbelegen (PHP 8: keine "Undefined variable", wenn keine Meisterschaft gefunden wird)
+		$tabelleA = array();
+		$tabelleB = array();
+
 		// Infos zum gewünschten Grand Prix laden
-		$objGrandPrix = \Database::getInstance()->prepare('SELECT * FROM tl_berolina_grandprix WHERE published = ? AND id = ?')
+		$objGrandPrix = \Contao\Database::getInstance()->prepare('SELECT * FROM tl_berolina_grandprix WHERE published = ? AND id = ?')
 		                                        ->execute(1, $gp_liste);
 
 		// Meisterschaftsteilnehmer einlesen
@@ -30,7 +34,7 @@ class GrandPrix extends \ContentElement
 		if($objGrandPrix->numRows == 1)
 		{
 			// Meisterschaft ist online
-			$teilnehmerliste = unserialize($objGrandPrix->players);
+			$teilnehmerliste = \Contao\StringUtil::deserialize($objGrandPrix->players, true);
 			// Teilnehmerliste um Leerfelder für einzelne Turniere, Punkte, Turnierzahl, Kategorie A/B erweitern
 			for($x = 0; $x < count($teilnehmerliste); $x++)
 			{
@@ -56,7 +60,7 @@ class GrandPrix extends \ContentElement
 			//array_unshift($wertungB, false);
 
 			// Turniere laden
-			$objTurniere = \Database::getInstance()->prepare('SELECT * FROM tl_berolina_grandprix_tournaments WHERE published = ? AND pid = ? ORDER BY date ASC')
+			$objTurniere = \Contao\Database::getInstance()->prepare('SELECT * FROM tl_berolina_grandprix_tournaments WHERE published = ? AND pid = ? ORDER BY date ASC')
 			                                       ->limit($max_turniernummer)
 			                                       ->execute(1, $gp_liste);
 
@@ -237,7 +241,7 @@ class GrandPrix extends \ContentElement
 			//echo "</pre>";
 			
 			// Wertungsreihenfolge laden und Sortierung initialisieren
-			$wertungen = unserialize($objGrandPrix->evaluation_order);
+			$wertungen = \Contao\StringUtil::deserialize($objGrandPrix->evaluation_order, true);
 			$sortierungA = array();
 
 			if(count($wertungen))
@@ -406,8 +410,8 @@ class GrandPrix extends \ContentElement
 			{
 				//echo "... Treffer<br>";
 				// Untersuchter vorheriger Platz identisch mit Platz des aktuellen Spielers
-				$wp_summe += $wertung[$x]; // Wertungspunkte aufaddieren
-				$wp_max = $wertung[$x]; // Neue Höchstwertung festlegen
+				$wp_summe += $wertung[$x] ?? 0; // Wertungspunkte aufaddieren
+				$wp_max = $wertung[$x] ?? 0; // Neue Höchstwertung festlegen
 				$wp_count++; // Eine weitere gleiche Plazierung addieren
 			}
 		}
@@ -420,7 +424,7 @@ class GrandPrix extends \ContentElement
 			{
 				//echo "... Treffer<br>";
 				// Untersuchter nächster Platz identisch mit Platz des aktuellen Spielers
-				$wp_summe += $wertung[$x]; // Wertungspunkte aufaddieren
+				$wp_summe += $wertung[$x] ?? 0; // Wertungspunkte aufaddieren
 				$wp_count++; // Eine weitere gleiche Plazierung addieren
 			}
 		}

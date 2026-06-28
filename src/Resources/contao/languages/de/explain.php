@@ -1,4 +1,4 @@
-<?php if (!defined('TL_ROOT')) die('You cannot access this file directly!');
+<?php
 
 $GLOBALS['TL_LANG']['XPL']['grandprix_csv'] = array
 (

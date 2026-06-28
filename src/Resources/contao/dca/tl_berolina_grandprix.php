@@ -21,7 +21,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 	// Config
 	'config' => array
 	(
-		'dataContainer'               => 'Table',
+		'dataContainer'               => \Contao\DC_Table::class,
 		'ctable'                      => array('tl_berolina_grandprix_tournaments'),
 		'enableVersioning'            => true,
 		'sql' => array
@@ -65,46 +65,39 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['edit'],
 				'href'                => 'table=tl_berolina_grandprix_tournaments',
-				'icon'                => 'edit.gif',
+				'icon'                => 'edit.svg',
 			),
 			'editheader' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['editheader'],
 				'href'                => 'act=edit',
-				'icon'                => 'header.gif',
-			),  
+				'icon'                => 'header.svg',
+			),
 			'copy' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['copy'],
 				'href'                => 'act=copy',
-				'icon'                => 'copy.gif'
+				'icon'                => 'copy.svg'
 			),
 			'delete' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['delete'],
 				'href'                => 'act=delete',
-				'icon'                => 'delete.gif',
+				'icon'                => 'delete.svg',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'toggle' => array
 			(
 				'label'                => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['toggle'],
+				'href'                 => 'act=toggle&amp;field=published',
+				'icon'                 => 'visible.svg',
 				'attributes'           => 'onclick="Backend.getScrollOffset()"',
-				'haste_ajax_operation' => array
-				(
-					'field'            => 'published',
-					'options'          => array
-					(
-						array('value' => '', 'icon' => 'invisible.svg'),
-						array('value' => '1', 'icon' => 'visible.svg'),
-					),
-				),
 			),
 			'show' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['show'],
 				'href'                => 'act=show',
-				'icon'                => 'show.gif'
+				'icon'                => 'show.svg'
 			)
 		)
 	),
@@ -347,6 +340,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 		'published' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['published'],
+			'toggle'                  => true,
 			'exclude'                 => true,
 			'search'                  => false,
 			'sorting'                 => false,
@@ -354,7 +348,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 			'inputType'               => 'checkbox',
 			'eval'                    => array('tl_class' => 'w50','isBoolean' => true),
 			'sql'                     => "char(1) NOT NULL default ''"
-		), 
+		),
 	)
 );
 
@@ -367,17 +361,8 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
  * @author     Leo Feyer <https://contao.org>
  * @package    News
  */
-class tl_berolina_grandprix extends Backend
+class tl_berolina_grandprix extends \Contao\Backend
 {
-
-	/**
-	 * Import the back end user object
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->import('BackendUser', 'User');
-	}
 
 	/**
 	 * Add a link to the table items import wizard

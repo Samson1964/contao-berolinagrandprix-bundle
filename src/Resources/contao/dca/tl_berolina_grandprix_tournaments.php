@@ -21,7 +21,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix_tournaments'] = array
 	// Config
 	'config' => array
 	(
-		'dataContainer'               => 'Table',
+		'dataContainer'               => \Contao\DC_Table::class,
 		'ptable'                      => 'tl_berolina_grandprix',
 		'enableVersioning'            => true,
 		'sql' => array
@@ -70,34 +70,27 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix_tournaments'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix_tournaments']['edit'],
 				'href'                => 'act=edit',
-				'icon'                => 'edit.gif'
+				'icon'                => 'edit.svg'
 			),
 			'copy' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix_tournaments']['copy'],
 				'href'                => 'act=copy',
-				'icon'                => 'copy.gif'
+				'icon'                => 'copy.svg'
 			),
 			'delete' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix_tournaments']['delete'],
 				'href'                => 'act=delete',
-				'icon'                => 'delete.gif',
+				'icon'                => 'delete.svg',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'toggle' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix_tournaments']['toggle'],
+				'href'                 => 'act=toggle&amp;field=published',
+				'icon'                 => 'visible.svg',
 				'attributes'           => 'onclick="Backend.getScrollOffset()"',
-				'haste_ajax_operation' => array
-				(
-					'field'            => 'published',
-					'options'          => array
-					(
-						array('value' => '', 'icon' => 'invisible.svg'),
-						array('value' => '1', 'icon' => 'visible.svg'),
-					),
-				),
 			),
 			'show' => array
 			(
@@ -199,6 +192,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix_tournaments'] = array
 		'published' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix_tournaments']['published'],
+			'toggle'                  => true,
 			'exclude'                 => true,
 			'search'                  => false,
 			'sorting'                 => false,
@@ -217,17 +211,8 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix_tournaments'] = array
 /**
  * Provide miscellaneous methods that are used by the data configuration array
  */
-class tl_berolina_grandprix_tournaments extends Backend
+class tl_berolina_grandprix_tournaments extends \Contao\Backend
 {
-	 
-	/**
-	 * Import the back end user object
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->import('BackendUser', 'User');
-	}
 
 	/**
 	 * Generiere eine Zeile als HTML
@@ -236,9 +221,9 @@ class tl_berolina_grandprix_tournaments extends Backend
 	 */
 	public function listTournaments($arrRow)
 	{
-	
-		return '<div class="tl_content_left">' . Date::parse(Config::get('dateFormat'), $arrRow['date']) . ' - ' . $arrRow['title'] . '</div>'; 
-		
+
+		return '<div class="tl_content_left">' . \Contao\Date::parse(\Contao\Config::get('dateFormat'), $arrRow['date']) . ' - ' . $arrRow['title'] . '</div>';
+
 	}
 
 }
