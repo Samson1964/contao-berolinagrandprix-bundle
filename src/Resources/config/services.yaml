@@ -1,0 +1,13 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    _instanceof:
+        Contao\CoreBundle\Framework\FrameworkAwareInterface:
+            calls:
+                - [setFramework, ['@contao.framework']]
+
+    # Die Rechenlogik ist ein reiner Wertobjekt-Rechner ohne Abhängigkeiten
+    # und wird direkt instanziiert, deshalb wird hier kein Service registriert.

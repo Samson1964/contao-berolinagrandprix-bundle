@@ -1,27 +1,26 @@
 <?php
 
 /**
- * Contao Open Source CMS
+ * Berolina-GrandPrix für Contao 4.13 und Contao 5
  *
- * Copyright (c) 2005-2015 Leo Feyer
- *
- * @package   Elo
  * @author    Frank Hoppe
- * @license   GNU/LPGL
- * @copyright Frank Hoppe 2016
+ * @license   LGPL-3.0-or-later
  */
 
+use Contao\Backend;
+use Contao\DataContainer;
+use Contao\DC_Table;
 
 /**
- * Table tl_berolina_grandprix
+ * Tabelle tl_berolina_grandprix
  */
 $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 (
 
-	// Config
+	// Konfiguration
 	'config' => array
 	(
-		'dataContainer'               => \Contao\DC_Table::class,
+		'dataContainer'               => DC_Table::class,
 		'ctable'                      => array('tl_berolina_grandprix_tournaments'),
 		'enableVersioning'            => true,
 		'sql' => array
@@ -33,15 +32,15 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 		)
 	),
 
-	// List
+	// Listenansicht
 	'list' => array
 	(
 		'sorting' => array
 		(
-			'mode'                    => 1,
+			'mode'                    => DataContainer::MODE_SORTED,
 			'fields'                  => array('jahr'),
 			'panelLayout'             => 'filter,sort;search,limit',
-			'flag'                    => 12,
+			'flag'                    => DataContainer::SORT_DESC,
 			'disableGrouping'         => true,
 		),
 		'label' => array
@@ -84,14 +83,14 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 				'label'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.svg',
-				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
+				'attributes'          => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '') . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'toggle' => array
 			(
-				'label'                => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['toggle'],
-				'href'                 => 'act=toggle&amp;field=published',
-				'icon'                 => 'visible.svg',
-				'attributes'           => 'onclick="Backend.getScrollOffset()"',
+				'label'               => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['toggle'],
+				'href'                => 'act=toggle&amp;field=published',
+				'icon'                => 'visible.svg',
+				'attributes'          => 'onclick="Backend.getScrollOffset()"',
 			),
 			'show' => array
 			(
@@ -102,32 +101,13 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 		)
 	),
 
-	// Select
-	'select' => array
-	(
-		'buttons_callback' => array()
-	),
-
-	// Edit
-	'edit' => array
-	(
-		'buttons_callback' => array()
-	),
-
-	// Palettes
+	// Paletten
 	'palettes' => array
 	(
-		'__selector__'                => array(''),
 		'default'                     => '{title_legend},title,jahr;{options_legend},ratingA,ratingB,viewnull,punktgleich;{rating_legend},maxdwz,max,evaluation_order;{players_legend},playerImport,players;{publish_legend},published'
 	),
 
-	// Subpalettes
-	'subpalettes' => array
-	(
-		''                            => ''
-	),
-
-	// Fields
+	// Felder
 	'fields' => array
 	(
 		'id' => array
@@ -148,7 +128,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 			'search'                  => true,
 			'eval'                    => array
 			(
-				'mandatory'           => true, 
+				'mandatory'           => true,
 				'tl_class'            => 'w50',
 				'maxlength'           => 255
 			),
@@ -161,10 +141,10 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 			'filter'                  => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'flag'                    => 12,
+			'flag'                    => DataContainer::SORT_DESC,
 			'eval'                    => array
 			(
-				'mandatory'           => true, 
+				'mandatory'           => true,
 				'tl_class'            => 'w50',
 				'maxlength'           => 4,
 				'rgxp'                => 'digit'
@@ -175,14 +155,12 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['ratingA'],
 			'exclude'                 => true,
-			'filter'                  => true,
 			'default'                 => '10,8,6,5,4,3,2,1',
 			'search'                  => true,
 			'inputType'               => 'text',
-			'flag'                    => 12,
 			'eval'                    => array
 			(
-				'mandatory'           => true, 
+				'mandatory'           => true,
 				'tl_class'            => 'long',
 				'maxlength'           => 255
 			),
@@ -192,14 +170,12 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['ratingB'],
 			'exclude'                 => true,
-			'filter'                  => true,
 			'default'                 => '5,3,2,1',
 			'search'                  => true,
 			'inputType'               => 'text',
-			'flag'                    => 12,
 			'eval'                    => array
 			(
-				'mandatory'           => true, 
+				'mandatory'           => true,
 				'tl_class'            => 'long',
 				'maxlength'           => 255
 			),
@@ -209,8 +185,6 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['viewnull'],
 			'exclude'                 => true,
-			'search'                  => false,
-			'sorting'                 => false,
 			'default'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
@@ -220,13 +194,11 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 				'isBoolean'           => true
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
-		), 
+		),
 		'punktgleich' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['punktgleich'],
 			'exclude'                 => true,
-			'search'                  => false,
-			'sorting'                 => false,
 			'default'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
@@ -236,7 +208,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 				'isBoolean'           => true
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
-		), 
+		),
 		'maxdwz' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['maxdwz'],
@@ -244,11 +216,10 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 			'filter'                  => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'default'                 => 1799,
-			'flag'                    => 12,
+			'default'                 => '1799',
 			'eval'                    => array
 			(
-				'mandatory'           => true, 
+				'mandatory'           => true,
 				'tl_class'            => 'w50',
 				'maxlength'           => 4,
 				'rgxp'                => 'digit'
@@ -262,12 +233,12 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 			'inputType'               => 'text',
 			'default'                 => 5,
 			'filter'                  => true,
-			'search'                  => true,
 			'eval'                    => array
 			(
-				'mandatory'           => true, 
+				'mandatory'           => true,
 				'tl_class'            => 'w50',
-				'maxlength'           => 1
+				'maxlength'           => 2,
+				'rgxp'                => 'natural'
 			),
 			'sql'                     => "int(1) unsigned NOT NULL default '0'"
 		),
@@ -275,7 +246,6 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['evaluation_order'],
 			'exclude'                 => true,
-			'default'                 => 0,
 			'inputType'               => 'checkboxWizard',
 			'options'                 => array('1', '2', '3', '4'),
 			'eval'                    => array
@@ -290,7 +260,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 		(
 			'exclude'                 => true,
 			'input_field_callback'    => array('tl_berolina_grandprix', 'getImportlink')
-		), 
+		),
 		'players' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['players'],
@@ -308,7 +278,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 						'inputType'             => 'text',
 						'eval'                  => array
 						(
-							'style'             => 'width:400px', 
+							'style'             => 'width:400px',
 						)
 					),
 					'playerdwz' => array
@@ -318,7 +288,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 						'inputType'             => 'text',
 						'eval'                  => array
 						(
-							'style'             => 'width:50px', 
+							'style'             => 'width:50px',
 							'maxlength'         => 4,
 							'rgxp'              => 'digit'
 						)
@@ -330,7 +300,7 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 						'inputType'             => 'text',
 						'eval'                  => array
 						(
-							'style'             => 'width:100px', 
+							'style'             => 'width:100px',
 						)
 					),
 				)
@@ -342,35 +312,30 @@ $GLOBALS['TL_DCA']['tl_berolina_grandprix'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_berolina_grandprix']['published'],
 			'toggle'                  => true,
 			'exclude'                 => true,
-			'search'                  => false,
-			'sorting'                 => false,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class' => 'w50','isBoolean' => true),
+			'eval'                    => array
+			(
+				'tl_class'            => 'w50',
+				'isBoolean'           => true
+			),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
 	)
 );
 
-
 /**
- * Class tl_berolina_grandprix
- *
- * Provide miscellaneous methods that are used by the data configuration array.
- * @copyright  Leo Feyer 2005-2014
- * @author     Leo Feyer <https://contao.org>
- * @package    News
+ * Stellt Hilfsmethoden für das Data-Container-Array bereit.
  */
-class tl_berolina_grandprix extends \Contao\Backend
+class tl_berolina_grandprix extends Backend
 {
-
 	/**
-	 * Add a link to the table items import wizard
+	 * Link auf den Import-Assistenten für die Mitgliederliste ausgeben.
 	 *
 	 * @return string
 	 */
 	public function getImportlink()
 	{
-		return '<div class="long widget"><a href="' . $this->addToUrl('key=dwzlist') . '" title="Mitglieder importieren" style="line-height:16px; vertical-align:middle;"><img src="bundles/contaoberolinagrandprix/icons/import.png"> Mitglieder importieren</a></div>';
+		return '<div class="long widget"><a href="' . $this->addToUrl('key=dwzlist') . '" title="Mitglieder importieren" style="line-height:16px; vertical-align:middle;"><img src="bundles/contaoberolinagrandprix/icons/import.png" alt="" width="16" height="16"> Mitglieder importieren</a></div>';
 	}
 }

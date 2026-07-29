@@ -1,5 +1,92 @@
 # Berolina-GrandPrix Changelog
 
+## Version 2.1.0 (2026-07-29)
+
+Das Bundle läuft jetzt **gleichzeitig unter Contao 4.13 und Contao 5** (PHP 8.1+).
+Verifiziert in einer Contao-4.13-Installation (Symfony 5.4) und einer
+Contao-5.7.7-Installation (Symfony 7.4), jeweils mit identischer Frontend-Ausgabe
+und ohne PHP-Warnungen oder Deprecations.
+
+### composer.json
+
+* Change: `contao/core-bundle` von `^5.3` auf `^4.13 || ^5.0`
+* Change: `symfony/dependency-injection` auf `^5.4 || ^6.4 || ^7.0`, dazu
+  `symfony/config` und `symfony/http-kernel` ergänzt
+* Change: `menatwork/contao-multicolumnwizard-bundle` von `*` auf `^3.6 || ^4.0`
+* Delete: `doctrine/doctrine-cache-bundle` aus `require-dev` entfernt (obsolet)
+* Add: `phpunit/phpunit: ^9.5` in `require-dev`, `autoload-dev` für die Tests
+
+### Behobene Fehler
+
+* Fix: **Fatal Error** `Unsupported operand types: string + int` beim Auswerten
+  einer Turnier-CSV mit Leerzeile am Ende (ab PHP 8). Leerzeilen, Zeilen ohne
+  Platzziffer und Zeilen ohne Namen werden jetzt übersprungen.
+* Fix: Nicht gespielte Turniere wurden als leere Streichwertung `<s></s>`
+  ausgegeben; durchgestrichen werden jetzt nur tatsächlich gespielte Turniere.
+* Fix: Ohne gesetzte Wertungsreihenfolge sortierte `array_multisort()` die
+  Teilnehmerliste nach dem kompletten Datensatz und die Plazierungsspalte blieb
+  komplett leer. Ohne Wertungsreihenfolge bleibt die Reihenfolge jetzt erhalten.
+* Fix: Die Plazierung wurde über zusammengesetzte, auf 2 bzw. 4 Zeichen
+  abgeschnittene Strings verglichen (Kollisionen ab 100 Punkten). Verglichen
+  werden jetzt die Wertungsfelder selbst.
+* Fix: `explode()` auf einen leeren `excluded`-Wert und fehlende Spalten aus dem
+  MultiColumnWizard erzeugten Deprecations bzw. „Undefined array key".
+* Fix: Leere oder nicht numerische Wertungspunkte (z.B. `10,,6`) führten ab
+  PHP 8 zu einem TypeError.
+* Fix: Die Option **„Nullwertungen anzeigen"** (`viewnull`) war im DCA definiert,
+  wurde aber nie ausgewertet. Ist sie deaktiviert, werden Teilnehmer ohne
+  Wertungspunkte jetzt ausgeblendet.
+* Fix: `System::setCookie('BE_PAGE_OFFSET', …)` im Import entfernt – das Cookie
+  existiert weder in Contao 4.13 noch in Contao 5.
+* Fix: Der Import legte die Version erst nach dem Schreiben an, sodass die
+  Vorgängerversion nicht wiederherstellbar war (`initialize()` fehlte).
+* Fix: Import brach mit „Undefined array key 1" ab, wenn eine CSV-Zeile keine
+  DWZ-Spalte enthielt.
+* Fix: `show.gif` → `show.svg` als Icon der Turnier-Operation.
+* Fix: Palette `berolina-grandprix` enthielt die Felder `guest` und `space`, die
+  es in `tl_content` weder in Contao 4.13 noch in Contao 5 gibt; dafür ist jetzt
+  `customTpl` enthalten (eigenes Template wählbar).
+* Fix: Fehlendes Sprachlabel `tl_content.editalias` (führte zu `sprintf(null)`).
+* Fix: Doppelte Definition von `tl_berolina_grandprix_tournaments.edit` und
+  diverse Tippfehler in den Sprachdateien.
+* Fix: Der Hilfetext zur CSV-Tabelle beschrieb eine Spaltenerkennung über
+  Spaltennamen, die es im Code nie gab. Er beschreibt jetzt die tatsächliche
+  Zuordnung über die Spaltenposition.
+
+### Umbau und Bereinigung
+
+* Add: Neue Klasse `Calculator\GrandPrixCalculator` – die komplette Rechenlogik
+  ohne Contao-Abhängigkeit und damit ohne Framework-Bootstrap testbar.
+* Add: 25 Unit-Tests in `tests/` samt `phpunit.xml.dist` und Bootstrap, der auch
+  ohne eigenes `vendor/`-Verzeichnis funktioniert.
+* Change: `ContentElements\GrandPrix` lädt nur noch die Daten und delegiert die
+  Berechnung; das Element zeigt im Backend jetzt einen Platzhalter statt der
+  kompletten Tabelle.
+* Change: Die Suche nach Teilnehmern je CSV-Zeile lief linear über die gesamte
+  Teilnehmerliste; jetzt über ein Namensregister. Die ausgeschlossenen Turniere
+  werden einmalig statt je CSV-Zeile aufgelöst.
+* Delete: Toter Code entfernt – `NameDrehen()`, `NameKonvertieren()`,
+  `getTemplates()`, das nirgends ausgewertete Array `$platzanzahl`, leere
+  `buttons_callback`/`__selector__`/`subpalettes`-Blöcke und die Sprachdatei
+  `tl_module.php` (Übersetzungen eines anderen Bundles).
+* Change: `services.yml` → `services.yaml` mit `autowire`/`autoconfigure`.
+* Change: `declare(strict_types=1)` in allen Klassendateien, Imports statt
+  vollqualifizierter Namen im Rumpf, `DataContainer::MODE_*`/`SORT_*`-Konstanten
+  statt Zahlen.
+* Change: Template `ce_grandprix.html5` nutzt jetzt `block_searchable` (der alte
+  Wrapper griff auf das in Contao 5 entfernte `$this->margin` zu), rendert beide
+  Kategorien über eine Schleife, maskiert Teilnehmernamen, ist gegen fehlende
+  Werte abgesichert und zeigt einen Hinweis, wenn eine Kategorie leer ist.
+* Change: `fgetcsv()` wird mit leerem `$escape`-Parameter aufgerufen (der
+  Standardwert `\` gilt ab PHP 8.4 als veraltet).
+
+### Hinweise
+
+* Die Datenbankstruktur ändert sich nicht – ein Update erfordert keine Migration.
+* Die Wertungspunkte richten sich weiterhin nach dem Rang **innerhalb der
+  Kategorie**, nicht nach dem Gesamtplatz. Gäste und Nicht-Mitglieder belegen
+  keinen Wertungsrang.
+
 ## Version 2.0.0 (2026-06-28)
 
 Komplette Anpassung an **Contao 5.7** und **PHP 8.4**. In Contao 5 entfernte
