@@ -1,0 +1,13 @@
+# Quelle fuer die Metadaten im Contao Manager (contao/package-metadata).
+# Aenderungen hier werden von Claude in den Fork uebertragen.
+# Der englische Block wird beim Abgleich ergaenzt, falls er fehlt.
+
+de:
+    title: Berolina-GrandPrix
+    description: >
+        Berechnet eine Grand-Prix-Wertung über mehrere Turniere hinweg und stellt sie im Frontend dar. Die Punkte richten sich nach dem Rang innerhalb der Kategorie, nicht nach der Gesamtplatzierung.
+    keywords:
+        - Schach
+        - Grand-Prix
+        - Wertung
+        - Turnier
